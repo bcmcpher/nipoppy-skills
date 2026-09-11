@@ -1,0 +1,19 @@
+{
+  "name": "nipoppy-skills",
+  "description": "Skills for working with Nipoppy: generating Boutiques descriptors for CLI tools, serializing argparse parsers, and driving the nipoppy CLI across the dataset lifecycle.",
+  "version": "0.1.0",
+  "author": { "name": "Nipoppy" },
+  "homepage": "https://nipoppy.readthedocs.io",
+  "repository": "https://github.com/nipoppy/skills",
+  "license": "MIT",
+  "keywords": [
+    "nipoppy",
+    "neuroimaging",
+    "boutiques",
+    "bids",
+    "dicom",
+    "pipeline",
+    "descriptor",
+    "reproducibility"
+  ]
+}
