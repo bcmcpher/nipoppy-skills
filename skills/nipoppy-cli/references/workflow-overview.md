@@ -7,7 +7,7 @@ It wraps around Boutiques descriptors to provide a consistent interface for runn
 
 ### Key dependencies
 
-- Linux or macOS operating system. Windows is not supported.
+- Python >= 3.10, Linux or macOS. Windows is not supported.
 - Apptainer or Docker: recommended for most setups. Can be bypassed if using baremetal installation of software or if pipelines can be loaded using `lmod`.
 
 ### Installation
@@ -64,30 +64,34 @@ In practice the user may start at any point in this process, and the flow is not
 
 ```
 <dataset>/
-├── global_config.json             # Global config: minimum settings needed for commands/pipeline to run
-├── manifest.tsv                   # Participant-session registry (user-maintained)
+├── .nipoppy/                      # Marks the study root
+├── global_config.json             # Global config: minimum settings needed for commands/pipelines to run
+├── manifest.tsv                   # Participant-visit registry (user-maintained ground truth)
+├── code/hpc/                      # HPC job template + scheduler configs
+├── containers/                    # Container images (e.g. .sif files)
+├── pipelines/
+│   └── {bidsification,processing,extraction}/<name>-<version>/   # Installed pipeline bundles
 ├── sourcedata/
 │   └── imaging/
+│       ├── curation_status.tsv    # Per-participant-session curation tracking
 │       ├── pre_reorg/             # Raw DICOMs drop zone (input to reorg)
 │       └── post_reorg/            # Reorg output: sub-<participant_id>/ses-<session_id> layout
 ├── bids/                          # BIDS-valid output from bidsify
-├── derivatives/                   # Pipeline outputs: <pipeline_name>/<pipeline_version>/...
+├── derivatives/                   # Pipeline outputs: <pipeline_name>/<pipeline_version>/output/
 │   └── processing_status.tsv      # Per-participant-session processing tracking
-├── proc/
-│   └── logs/                      # Per-run log files
-├── scratch/                       # Temporary working directories
-└── tabular/
-    └── curation_status.tsv        # Per-participant-session curation tracking
+├── logs/                          # Log files (one subdirectory per command)
+├── scratch/work/                  # Pipeline working directories
+└── tabular/                       # Phenotypic/tabular data
 ```
 
 ### manifest.tsv columns
 
 | Column | Description |
 |--------|-------------|
-| `participant_id` | Subject identifier without any `sub-` prefix (e.g., `001`) |
-| `visit` | Visit label without any `ses-` prefix (e.g., `baseline`) |
-| `session` | Session label without any `ses-` prefix (can be the same as `visit`) |
-| `datatype` | Imaging datatype (e.g., `anat`, `func`) |
+| `participant_id` | Alphanumeric subject identifier, no `sub-` prefix (e.g., `001`) |
+| `visit_id` | Visit label (e.g., `BL`); every row needs one |
+| `session_id` | Alphanumeric imaging session label, no `ses-` prefix (can be the same as `visit_id`); empty if no imaging at that visit |
+| `datatype` | List of BIDS datatypes (e.g., `['anat', 'dwi']`); empty if no imaging |
 
 ---
 
@@ -96,12 +100,13 @@ In practice the user may start at any point in this process, and the flow is not
 | Term | Definition |
 |------|------------|
 | **Boutiques** | JSON descriptor standard for containerized tools; nipoppy uses it to resolve pipeline invocations |
-| **Apptainer** | Linux container runtime (replaces Singularity); required for pipeline commands |
+| **Apptainer** | Default container engine (formerly Singularity); Docker or bare-metal installs also possible |
 | **BIDS** | Brain Imaging Data Structure — the target format for `bidsify` output |
 | **curation_status.tsv** | Tracks raw data availability, reorg completion, and BIDS conversion per participant-session |
-| **bagel.tsv** | Processing status file tracking pipeline completion per participant-session |
+| **processing_status.tsv** | Tracks pipeline completion (`SUCCESS`/`FAIL`) per participant-session, written by `track-processing` |
 | **IDP** | Imaging-Derived Phenotype — quantitative measure extracted from a pipeline output (e.g., cortical thickness, FA values) |
 | **pre_reorg** | Raw DICOM drop zone; unstructured |
 | **post_reorg** | Structured DICOM layout: one folder per participant per session |
+| **pipeline bundle** | Directory with a pipeline's `config.json`, Boutiques descriptor, invocation, and optional tracker/HPC configs |
 | **pipeline step** | A sub-stage within a pipeline (e.g., `prepare`, `convert` in dcm2bids) |
-| **simulate** | Dry-run mode: prints commands without executing them |
+| **simulate** | `--simulate` on `bidsify`/`process`/`extract`: print the pipeline invocation without running it (`--dry-run` is the general equivalent for all commands) |

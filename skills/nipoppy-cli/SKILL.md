@@ -6,76 +6,61 @@ license: MIT
 
 # Nipoppy CLI
 
-## Instructions
+## Step 1: Orient
 
-### Step 1: Identify the user's context
+1. Check that the CLI works: `nipoppy --version`. If it is not installed, ask user about any existing installation. If needed, with user confirmation, install `nipoppy` from PyPI with the user's preferred environment tool.
+2. Find the study root: the directory that contains a `.nipoppy/` directory. If none exists, the study must be initialized first (see `references/study-setup.md`).
+3. Inspect the study state (read-only):
+   - `global_config.json`: in particular `PIPELINE_VARIABLES` entries that are still `null`
+   - `manifest.tsv`
+   - `pipelines/{bidsification,processing,extraction}/`: installed pipelines
+   - `sourcedata/imaging/curation_status.tsv` and `derivatives/processing_status.tsv`
+   - `nipoppy status --study <root>` and `nipoppy pipeline list --study <root>` for a summary
+4. Report what is present or missing before proposing or running commands.
 
-Determine which workflow stage the user is at:
+## Step 2: Get exact syntax from the CLI
 
-- New dataset (no existing directory): direct to `init`
-- Existing dataset: inspect for `.nipoppy` directory to confirm it is initialized
-- Command question: identify which command group applies from the user's message
-- General workflow question: load `references/workflow-overview.md`
+Do not rely on memory for flags or arguments. Before building a command, run `nipoppy <command> [subcommand] -h`. The installed version is the source of truth.
 
-### Step 2: Load the relevant reference
-
-Based on the identified context, read the appropriate file:
+## Step 3: Load the relevant reference
 
 | Topic | Reference |
 |---|---|
-| Workflow overview / "what is nipoppy" / "full workflow" | `references/workflow-overview.md` |
-| `init` or `status` | `references/setup-commands.md` |
-| `track-curation` or `reorg` | `references/curation-commands.md` |
-| `bidsify` | `references/bids-commands.md` |
-| `process` | `references/process-command.md` |
-| `track-processing` or `extract` | `references/track-extract-commands.md` |
-| `pipeline search`, `pipeline install`, or `pipeline list` | `references/pipeline-catalog-commands.md` |
-| `pipeline create`, `pipeline validate`, or `pipeline upload` | `references/pipeline-authoring-commands.md` |
+| Overall workflow, directory layout, glossary | `references/workflow-overview.md` |
+| `init`, `manifest.tsv`, `global_config.json`, containers (Apptainer/Docker) | `references/study-setup.md` |
+| Raw DICOMs → BIDS: `reorg`, `bidsify`, `track-curation` | `references/curation.md` |
+| Installing and running pipelines: `pipeline search/install/list`, `process`, `track-processing`, `extract` | `references/pipelines.md` |
+| Running on a cluster (`--hpc slurm`/`sge`) | `references/hpc.md` |
+| Making or sharing a pipeline: `pipeline create/validate/upload` | `references/pipeline-authoring.md` |
 
-When uncertain, load `references/workflow-overview.md` first, then the relevant group reference.
+## Step 4: Run safely
 
-### Step 3: Check dataset state
+- Read-only commands can run freely: `-h`, `status`, `pipeline list`, `pipeline search`.
+- `--dry-run` (all commands) prints what would happen. `--simulate` (`bidsify`, `process`, `extract` only) prints the pipeline invocation without running the container.
+- For `bidsify`, `process` and `extract`, work up in stages:
+  1. `--simulate` on one participant-session (`--participant-id X --session-id Y`)
+  2. a live run on that one participant-session
+  3. the full cohort
+- Ask the user before:
+  - any live run that writes, moves or links data (`reorg`, `bidsify`, `process`, `extract`)
+  - submitting HPC jobs
+  - `pipeline install` (it may pull large container images)
+  - `pipeline upload` (it publishes to Zenodo)
+  - any `--force` flag
+- `manifest.tsv` is the user's ground truth for which participants and visits exist. Do not add or remove rows without explicit confirmation.
 
-If a dataset path is provided or discoverable (the user's message or the current working
-directory):
+## Step 5: Handle failures
 
-- Check for `config.json` (nipoppy dataset marker)
-- Check for `manifest.tsv` (participant/session registry)
-- Check the `manifest.tsv` for a `ses` column — its presence indicates a multi-session dataset,
-  which affects BIDS output paths
-- Load `references/setup-commands.md` to determine the expected sourcedata path for data
-  readiness checks (do not hardcode the path)
-- Report what is and is not present before giving command advice
+- Logs are under `<root>/logs/`. There is one subdirectory per command, and pipeline runs have a `<pipeline>-<version>/` subdirectory with one timestamped log per participant-session. HPC scheduler output is in `logs/hpc/`.
+- To debug, rerun one failed participant-session with `--keep-workdir` and `-v`. The work directory is kept under `scratch/work/`.
+- Runners skip participant-sessions already marked complete. Plain re-runs therefore only redo what is missing or failed, provided the status files are up to date.
 
-### Step 4: Provide targeted help
+## Key facts
 
-Answer with:
+- `--study <root>` sets the study root. It defaults to the current directory or the closest parent containing `.nipoppy/`. Releases before 0.4.8 call it `--dataset`, which is now a deprecated alias.
+- Participant and session IDs are alphanumeric only, with no `sub-`/`ses-` prefix in `manifest.tsv`. CLI ID options accept IDs with or without the prefix.
+- Deprecated command names still work with a warning: `doughnut` → `track-curation`, `run` → `process`, `track` → `track-processing`.
 
-- Full command syntax for the relevant subcommand(s)
-- Applicable options from the reference, matched to what the user described
-- Example invocations tailored to the user's dataset path and parameters when known
-- Warnings for common pitfalls (missing manifest entries, uninitialized dataset, etc.)
+## Typical order
 
-### Step 5: Suggest the next step
-
-After answering, recommend the next logical nipoppy command in the standard workflow order:
-
-```
-init → track-curation → reorg → bidsify → process → track-processing → extract
-```
-
-### Step 6: Handle errors
-
-If a pipeline command fails or the user reports an error:
-
-- Direct the user to check logs under `<dataset>/logs/<pipeline>/<version>/`
-- Report the relevant error lines from the log
-- Re-runs can target specific subjects with `--participant-id` to avoid re-running all subjects
-  when only some failed
-
-## Constraints
-
-- Always verify `config.json` and `manifest.tsv` exist before recommending commands that require an initialized dataset (`reorg`, `bidsify`, `process`, `track-processing`, `extract`).
-- Never run nipoppy commands without `--simulate` or `--dry-run` unless the user explicitly confirms they want live execution. Note that `--simulate` and `--dry-run` availability varies by command — load the relevant reference to confirm which flag applies before suggesting it.
-- Never add participants to `manifest.tsv` by hand — instruct the user to edit the file directly.
-- For HPC workflows, prefer `--hpc slurm` or `--hpc sge` when the cluster type is known and supported — nipoppy generates and submits job scripts automatically. Use `--write-subcohort` only when the HPC scheduler is unsupported or manual job submission control is required; in that case, load `references/process-command.md` for the subcohort workflow.
+`init` → manifest + raw data → `reorg` → `bidsify` → `process` → `track-processing` → `extract`. Run `track-curation` whenever raw or BIDS data changes outside Nipoppy. `status` can run at any time.
