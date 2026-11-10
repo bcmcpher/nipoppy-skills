@@ -1,7 +1,5 @@
 # Curation: raw DICOMs → BIDS
 
-Skip this stage if the study was initialized from an existing BIDS dataset.
-
 ## 1. Populate `sourcedata/imaging/pre_reorg/`
 
 - Use uncompressed DICOMs, one directory per participant-session.

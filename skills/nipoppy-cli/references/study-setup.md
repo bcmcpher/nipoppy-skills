@@ -4,15 +4,12 @@
 
 - **New study from raw (DICOM) data:** `nipoppy init --study <root>`.
   - Creates the directory tree, `.nipoppy/`, a default `global_config.json`, and an *example* `manifest.tsv`.
-  - The example manifest must be replaced with the study's real participants and visits.
+  - The example manifest must be replaced with the study's real participants and visits. Use a script to generate a correct manifest file.
 - **Starting from an existing BIDS dataset:** `nipoppy init --study <root> --bids-source <bids_dir>`.
-  - The BIDS data is symlinked by default; see `-h` for copy/move.
   - `manifest.tsv` is generated from the BIDS `sub-*`/`ses-*` folders.
   - Session-less BIDS data gets the dummy session `unnamed`.
   - Curation steps (`reorg`, `bidsify`) can then be skipped.
 - **Shared container images:** `--container-store <dir>` (or the `NIPOPPY_CONTAINER_STORE` env var) makes `containers/` a symlink to an existing shared directory.
-- `init` refuses to write into a non-empty directory unless forced. Ask the user before forcing, because it may clobber files.
-- If `~/.nipoppy/config.json` exists, `init` uses it instead of the default global config (for example, a lab-wide Docker or HPC setup).
 
 ## manifest.tsv
 
