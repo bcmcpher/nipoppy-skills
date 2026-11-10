@@ -29,18 +29,15 @@ participant_id	visit_id	session_id	datatype
 
 ## global_config.json
 
-The file is JSON and may contain comments. These are the keys to know:
+The file is JSON and may contain comments. Read it directly to see all keys. At setup, these two matter:
 
-| Key | Purpose |
-|---|---|
-| `SUBSTITUTIONS` | String replacements applied to this file and to pipeline configs. Set `[[HPC_ACCOUNT_NAME]]` here. Built-in placeholders such as `[[NIPOPPY_DPATH_ROOT]]`, `[[NIPOPPY_DPATH_CODE]]` and `[[NIPOPPY_DPATH_CONTAINERS]]` resolve to study paths. |
-| `DICOM_DIR_PARTICIPANT_FIRST` | `true` (default) means raw data is in `pre_reorg/<participant>/<session>/`. `false` means ``pre_reorg/<session>/<participant>/`. |
-| `DICOM_DIR_MAP_FILE` | Alternative to the above: a TSV with columns `participant_id`, `session_id` and `participant_dicom_dir` for arbitrary raw layouts. |
-| `CONTAINER_CONFIG` | Container engine settings: `COMMAND` (`"apptainer"`, `"singularity"`, `"docker"`, or `null` for baremetal execution), `ARGS`, `BIND_PATHS`, `ENV_VARS`. Pipeline configs can override these. |
-| `HPC_PREAMBLE` | Shell lines prepended to HPC job scripts. They must activate the Python environment that has Nipoppy installed (see [hpc.md](hpc.md)). |
-| `HPC_QUEUE_LIMIT` | Maximum number of your jobs allowed in the HPC queue (default config: 1000; `null` means no limit). |
-| `PIPELINE_VARIABLES` | Per-pipeline values organized as `{BIDSIFICATION,PROCESSING,EXTRACTION} → name → version → variable`. They are added as `null` by `pipeline install` and **must be filled in before running**. |
-| `CUSTOM` | Free-form; ignored by Nipoppy. |
+- `SUBSTITUTIONS`: string replacements applied to this file and to pipeline configs (e.g. `[[HPC_ACCOUNT_NAME]]`). Built-in placeholders such as `[[NIPOPPY_DPATH_ROOT]]`, `[[NIPOPPY_DPATH_CODE]]` and `[[NIPOPPY_DPATH_CONTAINERS]]` resolve to study paths.
+- `CONTAINER_CONFIG`: container engine settings: `COMMAND` (`"apptainer"`, `"singularity"`, `"docker"`, or `null` for baremetal execution), `ARGS`, `BIND_PATHS`, `ENV_VARS`. Pipeline configs can override these.
+
+Other keys are described where they are used:
+- raw DICOM layout (`DICOM_DIR_*`): [curation.md](curation.md)
+- HPC settings (`HPC_*`): [hpc.md](hpc.md)
+- `PIPELINE_VARIABLES`: [pipelines.md](pipelines.md)
 
 ### If using Docker instead of Apptainer
 

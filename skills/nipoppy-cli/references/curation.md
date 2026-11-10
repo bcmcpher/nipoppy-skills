@@ -7,7 +7,9 @@
 - Use uncompressed DICOMs, one directory per participant-session.
 - By default the layout is `pre_reorg/<participant_id>/<session_id>/...`.
 - Folder names must match the manifest IDs exactly, with no `sub-`/`ses-` prefixes.
-- Other layouts work through `DICOM_DIR_PARTICIPANT_FIRST: false` (session first) or a `DICOM_DIR_MAP_FILE` in `global_config.json` (see `study-setup.md`).
+- Other layouts are set in `global_config.json`:
+  - `DICOM_DIR_PARTICIPANT_FIRST: false` means `pre_reorg/<session_id>/<participant_id>/`.
+  - `DICOM_DIR_MAP_FILE` points to a TSV with columns `participant_id`, `session_id` and `participant_dicom_dir`, for arbitrary layouts. It takes the place of the setting above.
 
 ### 2. `nipoppy track-curation`
 

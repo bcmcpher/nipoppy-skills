@@ -9,7 +9,7 @@
   - `"source ~/.bashrc; conda activate <env>"`
 
   You can also add `module load apptainer` or similar here.
-- `HPC_QUEUE_LIMIT`: Nipoppy submits only as many jobs as fit under this limit given your current queue. Rerun the same command later to submit the rest; completed participant-sessions are skipped once tracked.
+- `HPC_QUEUE_LIMIT`: Nipoppy submits only as many jobs as fit under this limit given your current queue (`null` means no limit). Rerun the same command later to submit the rest; completed participant-sessions are skipped once tracked.
 - `SUBSTITUTIONS` → `[[HPC_ACCOUNT_NAME]]`: the allocation or account. It is passed as the Slurm account or SGE `-q`. Leave it empty if not needed.
 
 ## Per-pipeline resources
