@@ -24,7 +24,6 @@ This skill describes Nipoppy 0.4.8. Commands and layout may differ in other vers
     - any live run that writes, moves or links data (`reorg`, `bidsify`, `process`, `extract`)
     - submitting HPC jobs
     - `pipeline install` (it may pull large container images)
-    - `pipeline upload` (it publishes to Zenodo)
     - any `--force` flag
   - `manifest.tsv` is the user's ground truth for which participants and visits exist. Do not add or remove rows without explicit confirmation.
 
@@ -89,7 +88,6 @@ Read the reference that matches the study state and what the user wants:
 | Raw DICOMs → BIDS: `reorg`, `bidsify`, `track-curation` | [references/curation.md](references/curation.md) |
 | Installing and running pipelines: `pipeline search/install/list`, `process`, `track-processing`, `extract` | [references/pipelines.md](references/pipelines.md) |
 | Running on a cluster (`--hpc slurm`/`sge`) | [references/hpc.md](references/hpc.md) |
-| Making or sharing a pipeline: `pipeline create/validate/upload` | [references/pipeline-authoring.md](references/pipeline-authoring.md) |
 
 ## Glossary
 
