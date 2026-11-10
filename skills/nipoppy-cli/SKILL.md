@@ -86,7 +86,7 @@ Read the reference that matches the study state and what the user wants:
 |---|---|
 | `init`, `manifest.tsv`, `global_config.json`, containers (Apptainer/Singularity/Docker) | [references/study-setup.md](references/study-setup.md) |
 | Raw DICOMs → BIDS: `reorg`, `bidsify`, `track-curation` | [references/curation.md](references/curation.md) |
-| Installing and running pipelines: `pipeline search/install/list`, `process`, `track-processing`, `extract` | [references/pipelines.md](references/pipelines.md) |
+| Installing and running pipelines (`pipeline search/install/list`, `process`, `track-processing`, `extract`), including setting/changing pipeline arguments | [references/pipelines.md](references/pipelines.md) |
 | Running on a cluster (`--hpc slurm`/`sge`) | [references/hpc.md](references/hpc.md) |
 
 ## Glossary
