@@ -29,7 +29,7 @@ Use an empty string for keys you don't need. If a step has no HPC config, create
 1. Submit a single job first: `--participant-id X --session-id Y --hpc slurm`.
 2. Check that it succeeds.
 3. Submit the rest.
-4. Afterwards, run `track-processing` (for `process`). It is quick and can run on the login node.
+4. Afterwards, run `track-processing` (for `process`).
 
 Confirm with the user before submitting jobs.
 
@@ -44,4 +44,4 @@ Confirm with the user before submitting jobs.
 ## Other schedulers
 
 - **PySQA-supported schedulers:** add `<name>.yaml` in `code/hpc/`, register it in `code/hpc/clusters.yaml`, and add a section to the template. Then run with `--hpc <name>`.
-- **Fully manual submission:** use the write-subcohort option to dump the participant-session list to a TSV, then have each job run the command with the use-subcohort option on its share of that list. See `-h` for both.
+- **Fully manual submission:** use the write-subcohort option to dump the participant-session list to a TSV, then have each job run the command with the use-subcohort option on its share of that list.
