@@ -8,7 +8,8 @@ There are three pipeline types, each with its own command:
 | `processing` | `process` |
 | `extraction` | `extract` |
 
-All three runners take the same options (see `-h`). If not given, the pipeline version defaults to the latest installed and the step to the first step defined in the pipeline config file.
+The three runners share many options (see `-h`).
+If not given, the pipeline version defaults to the latest installed and the step to the first step defined in the pipeline config file.
 
 ## Installing pipelines
 
@@ -29,7 +30,7 @@ Nipoppy runs every step through [Boutiques](https://boutiques.github.io/), using
 - **Descriptor** (e.g. `descriptor.json`): describes the tool's command line. Each entry in `inputs` has an `id`, a type, and a `value-key` that marks where it goes in `command-line`. The descriptor defines which arguments *can* be set. Leave it alone unless an argument is missing from it.
 - **Invocation** (e.g. `invocation.json`): the argument values for this study. Keys are input `id`s from the descriptor. **This is where to set custom runtime arguments**.
 
-At run time, Nipoppy fills in placeholders in the invocation, then validates it against the descriptor and builds the command. Poddible placeholders:
+At run time, Nipoppy fills in placeholders in the invocation, then validates it against the descriptor and builds the command. Possible placeholders:
 - `[[NIPOPPY_*]]` paths and IDs, e.g. `[[NIPOPPY_DPATH_BIDS]]`, `[[NIPOPPY_DPATH_PIPELINE_OUTPUT]]`, `[[NIPOPPY_DPATH_PIPELINE_WORK]]`, `[[NIPOPPY_PARTICIPANT_ID]]` (no prefix), `[[NIPOPPY_BIDS_PARTICIPANT_ID]]` (with `sub-`), and the matching session forms
 - `[[<VARIABLE>]]` for the pipeline's own `PIPELINE_VARIABLES`, e.g. `[[FREESURFER_LICENSE_FILE]]`
 - keys from `SUBSTITUTIONS` in `global_config.json`
@@ -47,7 +48,7 @@ Edits apply only to this study's installed copy of the bundle.
 
 - Runs on participant-sessions that are `in_bids` in `curation_status.tsv` **and not** `SUCCESS` in `processing_status.tsv` for that pipeline, version and step.
 - Outputs go to `derivatives/<name>/<version>/output/`. The work directory under `scratch/work/` is deleted on success unless explicitly kept via CLI option.
-- A tar option archives each participant-session's output directory after success. Consider using this if the system imposes a limit on the number of inodes (files), though note that downstream processes will have to untar relevant files. It requires `PARTICIPANT_SESSION_DIR` in the pipeline's tracker config.
+- A tar option (unique to `process` command) archives each participant-session's output directory after success. Consider using this if the system imposes a limit on the number of inodes (files), though note that downstream processes will have to untar relevant files. It requires `PARTICIPANT_SESSION_DIR` in the pipeline's tracker config.
 
 Example command:
 
@@ -65,7 +66,7 @@ Run it after every `process` run. `process` does not update the status file itse
 - The tracker config has:
   - `PATHS`: expected output paths, relative to `derivatives/<name>/<version>/output/`. Globs (`*`) are allowed; a glob counts as found if at least one file matches. Placeholders `[[NIPOPPY_PARTICIPANT_ID]]`, `[[NIPOPPY_SESSION_ID]]`, `[[NIPOPPY_BIDS_PARTICIPANT_ID]]` and `[[NIPOPPY_BIDS_SESSION_ID]]` are filled in per participant-session.
   - `PARTICIPANT_SESSION_DIR` (optional): the participant-session output directory. Needed for the `process` tar option. When the output was tarred, `PATHS` are also looked for inside the tarball.
-- The tracker config file can be customized base on use-case.
+- The tracker config file can be customized based on use-case. Choose paths that only exist once a run has finished (e.g. a final report or the last output written), otherwise incomplete runs are marked `SUCCESS`.
 - `status` is `SUCCESS` if every entry in `PATHS` is found, and `FAIL` otherwise. Only file presence counts, not exit codes or file contents. Tracking runs only on participant-sessions that are `in_bids`.
 - Steps are tracked separately: pass the same `--pipeline-step` as for `process`.
 

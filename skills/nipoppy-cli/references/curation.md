@@ -28,7 +28,7 @@
 
 ### 4. `nipoppy bidsify`
 
-This involes running a BIDSification pipeline, see [pipelines.md](pipelines.md).
+This involves running a BIDSification pipeline, see [pipelines.md](pipelines.md).
 
 Most BIDSification pipelines in Nipoppy are divided into steps.
 Between the steps there is usually a manual step of creating a configuration or heuristic file mapping some DICOM file characteristics to BIDS file paths.
@@ -59,7 +59,7 @@ Every NIfTI should have an associated JSON sidecar file.
 If JSON sidecars are missing, they will need to be created using information from the DICOM headers.
 Consult BIDS specification for which fields are required.
 
-If NIfTI + JSON pairs are available, write a script to move/copy/symlink them into BIDS paths.
+If NIfTI + JSON pairs are available, write a script to move/copy/symlink them into BIDS paths. Show the user the planned source → BIDS mapping and get confirmation before writing into `bids/`.
 Consult the BIDS specification website and/or schema.
 
 ## After BIDSification

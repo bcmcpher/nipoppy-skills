@@ -9,7 +9,7 @@
   - Creates the directory tree, `.nipoppy/` and a default `global_config.json`, and generates a correct `manifest.tsv` from the BIDS `sub-*`/`ses-*` folders.
   - Session-less BIDS data gets the dummy session `unnamed`.
   - Curation steps (`reorg`, `bidsify`) can then be skipped.
-- **Shared container images:** `--container-store <dir>` (or the `NIPOPPY_CONTAINER_STORE` env var) makes `containers/` a symlink to an existing shared directory. Only relevant if using Apptainer or Singularity. Added in 0.4.8.
+- **Shared container images:** `--container-store <dir>` (or the `NIPOPPY_CONTAINER_STORE` env var) makes `containers/` a symlink to an existing shared directory. Only relevant if using Apptainer or Singularity.
 
 ## manifest.tsv
 
@@ -46,8 +46,6 @@ In `CONTAINER_CONFIG`:
 - remove Apptainer-only args from `ARGS`, notably `--cleanenv`
 
 Apply the same change to any `CONTAINER_CONFIG` in installed pipeline `config.json` files (top-level or per step).
-
-`BIND_PATHS` requires Nipoppy >= 0.4.6. With older versions, use `--volume src:dst` in `ARGS`.
 
 ### Environment overrides
 

@@ -25,6 +25,7 @@ This skill describes Nipoppy 0.4.8. Commands and layout may differ in other vers
     - submitting HPC jobs
     - `pipeline install` (it may pull large container images)
     - any `--force` flag
+    - editing pipeline bundle files (invocation, descriptor, tracker or HPC configs) or `code/hpc/job_script_template.sh`, since these change how pipelines run and tracking statuses
   - `manifest.tsv` is the user's ground truth for which participants and visits exist. Do not add or remove rows without explicit confirmation.
 
 ## Step 1: Check environment
@@ -61,7 +62,7 @@ Study layout (created by `nipoppy init`):
 ├── bids/                      # BIDS data (output of bidsify)
 ├── derivatives/
 │   ├── <name>/<version>/output/        # Pipeline outputs
-│   └── processing_status.tsv  # SUCCESS/FAIL per participant-session and pipeline
+│   └── processing_status.tsv  # SUCCESS/FAIL per participant-session, pipeline and step
 ├── logs/                      # One subdirectory per command; HPC output in logs/hpc/
 ├── scratch/work/              # Pipeline working directories
 └── tabular/                   # Phenotypic data
@@ -74,8 +75,8 @@ Typical workflow:
 1. `nipoppy init`, then edit `manifest.tsv` and `global_config.json`
 2. Put raw DICOMs in `sourcedata/imaging/pre_reorg/`, then `nipoppy track-curation`
 3. `nipoppy reorg`
-4. `nipoppy bidsify` (then `track-curation` if `in_bids` was not updated)
-5. `nipoppy process`, then `nipoppy track-processing`
+4. Install and configure a BIDS converter pipeline, then `nipoppy bidsify` (then `track-curation` if `in_bids` was not updated)
+5. Install and configure processing pipelines, then `nipoppy process`, then `nipoppy track-processing`
 6. `nipoppy extract`
 
 Users may start at any point. BIDS-first studies skip steps 2-4.
