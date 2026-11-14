@@ -4,6 +4,9 @@ on:
   push:
     branches: ["**"]
   pull_request:
+  schedule:
+    # Weekly, so a new Nipoppy release shows up in the `latest` drift job.
+    - cron: "0 6 * * 1"
 
 jobs:
   validate:
@@ -46,3 +49,29 @@ jobs:
         run: pip install boutiques
       - name: Extract and validate the descriptors embedded in SKILL.md
         run: .github/scripts/validate-examples.py
+
+  nipoppy-cli-drift:
+    name: nipoppy-cli skill matches CLI (${{ matrix.target }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [pinned, latest]
+    # A failure on `latest` means it is time to bump the pin, not that the skill is broken.
+    continue-on-error: ${{ matrix.target == 'latest' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install Nipoppy
+        run: |
+          # --print-pin fails when the skill is absent; the check step then skips itself.
+          PIN=$(.github/scripts/check-nipoppy-cli.py --print-pin) || exit 0
+          if [ "${{ matrix.target }}" = pinned ]; then
+            pip install "nipoppy==$PIN"
+          else
+            pip install -U nipoppy
+          fi
+      - name: Check skill against CLI
+        run: .github/scripts/check-nipoppy-cli.py

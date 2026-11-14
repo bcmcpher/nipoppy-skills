@@ -55,6 +55,31 @@ still pass `bosh validate`. Run it locally with:
 .github/scripts/validate-skills.sh
 ```
 
+## Nipoppy version
+
+The `nipoppy-cli` skill describes one Nipoppy release. The release is pinned in
+its frontmatter as `metadata.nipoppy-version`.
+
+CI checks every `nipoppy` subcommand and flag that the skill names against the
+CLI. It runs this check twice:
+
+- against the pinned version, which must pass;
+- against the latest PyPI release, weekly and on every push. A failure here is
+  a warning that the pin is out of date.
+
+Run the check locally in an environment that has Nipoppy installed:
+
+```bash
+.github/scripts/check-nipoppy-cli.py
+```
+
+To move the skill to a new Nipoppy release:
+
+1. Change `metadata.nipoppy-version` in `skills/nipoppy-cli/SKILL.md`.
+2. Install that release and run the check. Fix each reported line.
+3. Review the references for behavior changes that the check cannot see.
+4. Bump `version` in `.claude-plugin/plugin.json`.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

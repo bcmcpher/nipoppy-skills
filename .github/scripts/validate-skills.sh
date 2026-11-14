@@ -99,6 +99,15 @@ for skill_dir in skills/*/; do
         ok "has a description"
     fi
 
+    # The nipoppy-cli drift check (check-nipoppy-cli.py) reads its version pin here.
+    if [[ "$name" == "nipoppy-cli" ]]; then
+        if echo "$frontmatter" | grep -qE '^[[:space:]]+nipoppy-version:[[:space:]]*"?[0-9]'; then
+            ok "has metadata.nipoppy-version"
+        else
+            bad "frontmatter has no metadata.nipoppy-version"
+        fi
+    fi
+
     if [[ -n "$fm_name" ]]; then
         if [[ -n "${seen_names[$fm_name]:-}" ]]; then
             bad "duplicate skill name '$fm_name' (also in ${seen_names[$fm_name]})"
