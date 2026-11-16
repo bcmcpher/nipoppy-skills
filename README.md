@@ -14,11 +14,11 @@ update.
 
 ## Available skills
 
-| Skill | Use it for |
+| Skill | Purpose |
 |---|---|
 | [`argparse-argdump-serializer`](skills/argparse-argdump-serializer) | Serializing Python `argparse` parsers from a repository into JSON with `argdump` |
 | [`boutiques-descriptor-creator`](skills/boutiques-descriptor-creator) | Generating a Boutiques 0.5 descriptor for a CLI tool from its help text, including containerized tools |
-| [`nipoppy-cli`](skills/nipoppy-cli) | Curating and processing neuroimaging datasets with the Nipoppy CLI, from raw DICOMs through BIDS conversion and processing pipelines to phenotype extraction, locally or on HPC |
+| [`nipoppy-cli`](skills/nipoppy-cli) | Working with the Nipoppy CLI |
 
 ## Install for Claude Code
 
