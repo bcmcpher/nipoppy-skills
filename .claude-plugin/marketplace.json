@@ -1,0 +1,22 @@
+{
+  "name": "nipoppy",
+  "description": "Nipoppy-related skills for LLM agents (experimental)",
+  "owner": {
+    "name": "Nipoppy",
+    "url": "https://github.com/nipoppy"
+  },
+  "plugins": [
+    {
+      "name": "nipoppy-skills",
+      "source": "./",
+      "description": "Skills for working with Nipoppy: generating Boutiques descriptors for CLI tools, serializing argparse parsers, and driving the nipoppy CLI across the dataset lifecycle.",
+      "version": "0.1.0",
+      "keywords": [
+        "nipoppy",
+        "neuroimaging",
+        "boutiques",
+        "bids"
+      ]
+    }
+  ]
+}
