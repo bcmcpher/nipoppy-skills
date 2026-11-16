@@ -9,7 +9,7 @@
     {
       "name": "nipoppy-skills",
       "source": "./",
-      "description": "Skills for working with Nipoppy: generating Boutiques descriptors for CLI tools, serializing argparse parsers, and driving the nipoppy CLI across the dataset lifecycle.",
+      "description": "Skills for working with the Nipoppy framework for standardized and reproducible curation and processing of neuroimaging studies.",
       "version": "0.1.0",
       "keywords": [
         "nipoppy",
