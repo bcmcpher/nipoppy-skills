@@ -4,11 +4,8 @@ This repository contains skills for LLM agents to work with Nipoppy users.
 
 Skills can be found under the `skills` directory. They follow the [Agent Skills specification](https://agentskills.io/home). 
 
-This repository is compatible with two agent harnesses:
-
-- **Claude Code**, via the plugin manifest in `.claude-plugin/` (see below)
-- **GitHub Copilot**, via `.github/skills`, which is a symlink to `skills/`
-
+This repository is a plugin for Claude Code and GitHub Copilot CLI. Both read the
+manifest in `.claude-plugin/`.
 
 ## Available skills
 
@@ -32,20 +29,12 @@ installing them:
 claude --plugin-dir /path/to/skills
 ```
 
-## Install for GitHub Copilot
+## Install for GitHub Copilot CLI
 
-Copilot discovers skills in `.github/skills` automatically once the repository
-is available to it. No extra configuration is required.
-
-## Contributing
-
-- One skill per pull request. Prefix the title with `[ENH]`.
-- Keep `SKILL.md` focused on the workflow. Move field references, schemas, and
-  long tables into `references/` so they are only read when needed.
-- Refer to supporting files with plain skill-relative paths
-  (`references/foo.md`, `scripts/bar.sh`), not harness-specific variables — the
-  same file has to resolve under both Claude Code and Copilot.
-- Make any script the skill tells the agent to run executable (`chmod +x`).
+```bash
+copilot plugin marketplace add nipoppy/skills
+copilot plugin install nipoppy-skills@nipoppy
+```
 
 ## License
 
