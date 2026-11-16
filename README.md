@@ -9,8 +9,6 @@ This repository is compatible with two agent harnesses:
 - **Claude Code**, via the plugin manifest in `.claude-plugin/` (see below)
 - **GitHub Copilot**, via `.github/skills`, which is a symlink to `skills/`
 
-Adding a directory under `skills/` is enough for both — there is no manifest to
-update.
 
 ## Available skills
 
