@@ -4,8 +4,7 @@ This repository contains skills for LLM agents to work with Nipoppy users.
 
 Skills can be found under the `skills` directory. They follow the [Agent Skills specification](https://agentskills.io/home). 
 
-This repository is a plugin for Claude Code and GitHub Copilot CLI. Both read the
-manifest in `.claude-plugin/`.
+This repository is a plugin for Claude Code and GitHub Copilot CLI. Both read the manifest in `.claude-plugin/`.
 
 ## Available skills
 
@@ -22,8 +21,7 @@ claude plugin marketplace add nipoppy/skills
 claude plugin install nipoppy-skills@nipoppy
 ```
 
-Restart Claude Code afterwards. To try the skills from a local clone without
-installing them:
+Restart Claude Code afterwards. To try the skills from a local clone without installing them:
 
 ```bash
 claude --plugin-dir /path/to/skills
