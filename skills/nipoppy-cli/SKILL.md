@@ -2,6 +2,8 @@
 name: nipoppy-cli
 description: Curates and processes neuroimaging datasets with the Nipoppy CLI, from raw DICOMs through BIDS conversion (e.g. dcm2bids) to processing pipelines (e.g. fMRIPrep, MRIQC, FreeSurfer, custom scripts) and imaging-derived phenotype extraction, locally or on HPC (Slurm or SGE). Use when a user mentions Nipoppy or wants to standardize (using BIDS) or process neuroimaging data. Also use when a .nipoppy directory, global_config.json, or manifest.tsv file is present.
 license: MIT
+metadata:
+  nipoppy-version: "0.4.8"
 ---
 
 # Nipoppy CLI
@@ -12,10 +14,12 @@ This skill describes Nipoppy 0.4.8. Commands and layout may differ in other vers
 
 - **Always get exact syntax from the CLI itself.**
   - Do not rely on prior knowledge of older Nipoppy versions.
-  - Before running any Nipoppy command, run its help first, e.g. `nipoppy process -h` or `nipoppy pipeline install -h`. Use only flags shown there. The installed version is the source of truth.
+  - Before running any Nipoppy command for the first time, run its help, e.g. `nipoppy process -h` or `nipoppy pipeline install -h`. Use only flags shown there. The installed version is the source of truth.
 - **Run safely**
   - Read-only commands can run freely: `-h`, `status`, `pipeline list`, `pipeline search`.
-  - `--dry-run` (all commands) prints what would happen. `--simulate` (`bidsify`, `process`, `extract` only) prints the generated pipeline command without running it.
+  - `track-curation` and `track-processing` will create a timestamped backup of existing status files before overwriting them.
+  - `--dry-run` (all commands) prints what would happen. Log files are still written.
+  - `--simulate` (`bidsify`, `process`, `extract` only) prints the generated pipeline command without running it. Log and other study files/directories are still created.
   - For `bidsify`, `process` and `extract`, work up in stages:
     1. `--simulate` on one participant-session (`--participant-id X --session-id Y`)
     2. a live run on that one participant-session
@@ -102,6 +106,6 @@ Read the reference that matches the study state and what the user wants:
 
 ## Troubleshooting
 
-- Logs are under `<root>/logs/`. There is one subdirectory per command, and pipeline runs have a `<pipeline>-<version>/` subdirectory with one timestamped log per participant-session. HPC scheduler output is in `logs/hpc/`.
+- Logs are under `<root>/logs/nipoppy/`. There is one subdirectory per command, and pipeline runs have a `<pipeline>-<version>-<step>/` subdirectory with one timestamped log per participant-session. HPC scheduler output is in `logs/hpc/`.
 - To debug a pipeline run, rerun one failed participant-session with `--keep-workdir` and `-v`. The work directory is kept under `scratch/work/`.
 - Runners skip participant-sessions already marked complete. Plain re-runs therefore only redo what is missing or failed, provided the status files are up to date.
