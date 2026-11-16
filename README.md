@@ -2,8 +2,9 @@
 
 This repository contains skills for LLM agents to work with Nipoppy users.
 
-Each skill lives in `skills/<name>/` as a `SKILL.md` plus any `references/` and
-`scripts/` it needs. The same directory is consumed by two agent harnesses:
+Skills can be found under the `skills` directory. They follow the [Agent Skills specification](https://agentskills.io/home). 
+
+This repository is compatible with two agent harnesses:
 
 - **Claude Code**, via the plugin manifest in `.claude-plugin/` (see below)
 - **GitHub Copilot**, via `.github/skills`, which is a symlink to `skills/`
